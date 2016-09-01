@@ -1,0 +1,28 @@
+EXTERN main
+
+c       IS      $0
+spc     IS      $1
+n       IS      $2
+word    IS      $3
+main    XOR     c,c,c
+        XOR     n,n,n
+        OR      words,rSP,0
+        SETW    rX,1
+start   INT     #80
+limbo   JN      rA,print
+        CALL    isspace
+        JNZ     spc,start
+        PUSH    c
+        STBU    rA,c,0
+        ADDU    c,c,1
+read    INT     #80
+        JN      rA,finish
+        CALL    isspace
+        JNZ     spc,finish
+        STBU    rA,c,0
+        ADDU    c,c,1
+        JMP     read
+finish  XOR     rY,rY,r
+        STBU    rY,c,0
+        ADDU    c,c,1
+        JMP     limbo
