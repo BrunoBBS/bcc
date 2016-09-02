@@ -1,0 +1,13 @@
+print   SL      n,n,3
+loop    JZ      w,end
+        SUBU    n,n,8
+        SAVE    rSP,n,words
+        LDOU    rX,words,n
+        PUSH    rX
+        CALL    puts
+        EST     rSP,n,words
+        SETW    rX,2
+        SETW    rY,10
+        INT     #80
+        JMP     loop
+end     INT     0
