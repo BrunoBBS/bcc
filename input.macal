@@ -3,7 +3,7 @@ EXTERN main
 c       IS      $0
 spc     IS      $1
 n       IS      $2
-word    IS      $3
+words    IS      $3
 main    XOR     c,c,c
         XOR     n,n,n
         OR      words,rSP,0
@@ -22,7 +22,20 @@ read    INT     #80
         STBU    rA,c,0
         ADDU    c,c,1
         JMP     read
-finish  XOR     rY,rY,r
+finish  XOR     rY,rY,rY
         STBU    rY,c,0
         ADDU    c,c,1
         JMP     limbo
+print   SL      n,n,3
+loop    JZ      n,end
+        SUBU    n,n,8
+        SAVE    rSP,n,words
+        LDOU    rX,words,n
+        PUSH    rX
+        CALL    puts
+        REST     rSP,n,words
+        SETW    rX,2
+        SETW    rY,10
+        INT     #80
+        JMP     loop
+end     INT     0

@@ -1,0 +1,12 @@
+		XOR		$
+		SETW	
+le_ch	INT		#80
+		CMP		$1,rA,48
+nega	JN		$1,posi
+		CMP		$1 rA,57
+posi	JP		$1,nega
+		SUBU 	rA,rA,48
+		MULU	$0,$0,10
+		ADDU	$0,$0,rA
+		JMP 	le_ch
+		INT		0
