@@ -1,0 +1,65 @@
+EXTERN main
+
+c       IS      $0          
+spc     IS      $1          
+n       IS      $2          
+words   IS      $3          
+col     IS      $6
+parag   IS      $21
+aux     IS      $7
+count   IS      $16
+esp_sob IS      $19
+pos_w   IS      $22
+esp     IS      $11
+
+
+main    XOR     c,c,c   
+        XOR     count,count,count
+        XOR     pos_w,pos_w,pos_w
+        XOR     col,col,col
+        XOR     n,n,n       
+        OR      words,rSP,0 
+        OR      pos_w,pos_w,words
+        SETW    rX,1
+        XOR     parag,parag,parag
+        OR      parag,parag,1
+        CALL    colunas
+
+start   INT     #80
+limbo   JN      rA,print
+        CALL    isspace
+        JZ      spc,start
+        PUSH    c
+        STBU    rA,c,0
+        ADDU    c,c,1
+
+read    INT     #80
+        JN      rA,finish
+        CALL    isspace
+        JZ      spc,finish
+        JZ      parag,finish
+        STBU    rA,c,0
+        ADDU    c,c,1
+        JMP     read        
+
+finish  SETW    rY,0
+        STB     rY,c,0      
+        ADDU    c,c,1       
+        ADDU    n,n,1
+        JN      rA,limbo
+        JZ      spc,limbo
+espac   INT     #80
+        CALL    isspace
+        JZ      spc,espac
+        JNZ     parag,limbo
+        JMP     limbo       
+
+print   CALL    espacos
+        CALL    puts
+        INT     #DBffff
+        JN      esp_sob,end
+        JMP     print
+
+end     INT     #DBffff
+        INT     0
+

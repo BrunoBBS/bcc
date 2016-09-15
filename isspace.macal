@@ -1,0 +1,24 @@
+EXTERN isspace
+
+spc     IS      $1
+c       IS      $0
+n       IS      $2
+aux     IS      $7
+parag   IS      $21
+
+isspace XOR     spc,spc,spc
+        OR      spc,spc,1
+        XOR     parag,parag,parag
+        OR      parag,parag,1
+        CMP     parag,rA,10
+        JZ      parag,end
+        CMP     spc,rA,9
+        JZ      spc,end
+        CMP     spc,rA,13
+        JZ      spc,end
+        CMP     spc,rA,32
+        JZ      spc,end
+        JMP     end
+
+        
+end     RET     0

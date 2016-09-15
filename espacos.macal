@@ -1,0 +1,91 @@
+EXTERN espacos
+
+n       IS      $10
+esp     IS      $11
+esp_sob IS      $19
+col     IS      $6
+aux     IS      $13
+aux2    IS      $20
+w1      IS      $14
+w2      IS      $15
+w1_len  IS      $17
+words   IS      $3
+count   IS      $16
+tot_len IS      $18
+pos_w   IS      $22
+dl_esp  IS      $25
+tot_pal IS      $28
+
+espacos XOR     esp,esp,esp
+        XOR     esp_sob,esp_sob,esp_sob
+        ADDU    pos_w,pos_w,count
+        XOR     tot_pal,tot_pal,tot_pal
+
+lop_som LDOU    w1,words,count
+        ADDU    tot_pal,tot_pal,1
+        LDB     aux,w1,0
+        JN      aux,fim
+        CMP     aux,aux,10
+        JZ      aux,if_par
+        JMP     fi_par
+
+if_par  CMP     aux,tot_pal,1
+        JNZ     aux,end
+        ADDU    w1,w1,1
+fi_par  NOP
+
+        ADDU    count,count,8
+        ADDU    tot_pal,tot_pal,1
+        LDOU    w2,words,count
+        SUBU    w1_len,w2,w1
+        SUBU    w1_len,w1_len,1
+        ADDU    tot_len,tot_len,w1_len
+        ADDU    tot_len,tot_len,esp
+        CMP     aux,tot_len,col
+        OR      esp,esp,1
+        JP      aux,maior
+        JZ      aux,certo
+        JMP     lop_som
+
+maior   CMP     aux,tot_pal,2
+        JZ      aux,if_unic
+        JMP     fi_unic
+
+if_unic SETW    esp_sob,0
+        JMP     end
+fi_unic NOP
+
+        SUBU    tot_len,tot_len,w1_len
+        SUBU    tot_len,tot_len,1
+        SUBU    n,col,tot_len
+        SR      aux2,count,3
+        SUBU    count,count,8
+        SUBU    aux2,aux2,1
+        DIVU    aux,n,aux2
+        ADDU    esp,aux,1
+        OR      esp_sob,esp_sob,rR
+        SUBU    dl_esp,aux2,esp_sob
+        JMP     end
+
+certo   SR      aux2,count,3
+        SUBU    aux2,aux2,1
+        DIVU    aux,n,aux2
+        ADDU    esp,aux,1
+        OR      esp_sob,esp_sob,rR
+        SUBU    dl_esp,aux2,esp_sob
+        JMP     end
+
+fim     XOR     esp_sob,esp_sob,esp_sob
+        SUB     esp_sob,esp_sob,1
+
+end     JZ      w1,fi_para
+        SUB     aux,w1,1
+        LDBU    aux,aux,0
+        CMP     aux,aux,10
+        JZ      aux,if_para
+        JMP     fi_para
+
+if_para SUBU    w1,w1,1
+fi_para NOP
+
+        RET     0

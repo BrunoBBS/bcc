@@ -1,0 +1,18 @@
+EXTERN colunas
+
+aux     IS      $7
+col     IS      $6
+
+colunas SUBU    aux,rSP,24
+        LDOU    aux,aux,0
+
+lop_col LDBU    aux,aux,0
+        JZ      aux,fsh_col
+        SUBU    aux,aux,48
+        MULU    col,col,10
+        ADDU    col,col,aux
+        ADDU    aux,aux,1
+        JMP     lop_col
+
+fsh_col XOR     aux,aux,aux
+        RET     0

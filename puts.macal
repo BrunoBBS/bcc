@@ -1,0 +1,54 @@
+EXTERN puts
+
+ind_pal IS      $5
+aux     IS      $13
+esp     IS      $11
+count   IS      $16
+esp_sob IS      $19
+pos_w   IS      $22
+ind_esp IS      $23
+ind_c   IS      $24
+dl_esp  IS      $25
+spc_pr  IS      $26
+fim_pal IS      $27
+tot_pal IS      $28
+
+puts    SETW    rX,2
+        XOR     ind_esp,ind_esp,ind_esp
+        XOR     ind_pal,ind_pal,ind_pal
+
+write_w ADDU    ind_esp,ind_esp,1
+        CMP     aux,ind_pal,tot_pal
+        JNN     aux,end
+        CMP     aux,ind_esp,dl_esp
+        JP      aux,if_1
+        JMP     fi_1
+
+if_1    ADDU    esp,esp,1
+fi_1    NOP
+
+        LDOU    aux,pos_w,ind_pal
+        XOR     ind_c,ind_c,ind_c
+
+write_c LDB     rY,aux,ind_c
+        JZ      rY,end_pal
+        INT     #80
+        ADDU    ind_c,ind_c,1
+        JMP     write_c
+
+
+end_pal ADDU    ind_pal,ind_pal,8
+        SETW    rY,42
+        SUBU    aux,tot_pal,1
+        CMP     aux,ind_pal,aux
+        JZ      aux,pula_sp
+
+prt_spc INT     #80
+        SUBU    esp,esp,1
+        JNZ     esp,prt_spc
+pula_sp JMP     write_w
+        
+
+end     SETW    rY,10
+        INT     #80
+        RET     0
