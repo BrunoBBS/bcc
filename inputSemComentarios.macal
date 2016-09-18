@@ -11,18 +11,20 @@ count   IS      $16
 esp_sob IS      $19
 pos_w   IS      $22
 esp     IS      $11
+fim_txt IS      $30
 
 
 main    XOR     c,c,c   
         XOR     count,count,count
         XOR     pos_w,pos_w,pos_w
         XOR     col,col,col
+        XOR     parag,parag,parag    
         XOR     n,n,n       
+        XOR     fim_txt,fim_txt,fim_txt
         OR      words,rSP,0 
         OR      pos_w,pos_w,words
-        SETW    rX,1
-        XOR     parag,parag,parag
         OR      parag,parag,1
+        SETW    rX,1
         CALL    colunas
 
 start   INT     #80
@@ -56,10 +58,8 @@ espac   INT     #80
 
 print   CALL    espacos
         CALL    puts
-        INT     #DBffff
-        JN      esp_sob,end
+        JNZ     fim_txt,end
         JMP     print
 
-end     INT     #DBffff
-        INT     0
+end     INT     0
 

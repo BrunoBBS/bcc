@@ -2,17 +2,19 @@ EXTERN colunas
 
 aux     IS      $7
 col     IS      $6
+c       IS      $0
 
 colunas SUBU    aux,rSP,24
         LDOU    aux,aux,0
 
-lop_col LDBU    aux,aux,0
-        JZ      aux,fsh_col
-        SUBU    aux,aux,48
+lop_col LDBU    c,aux,0
+        JZ      c,fsh_col
+        SUBU    c,c,48
         MULU    col,col,10
-        ADDU    col,col,aux
+        ADDU    col,col,c
         ADDU    aux,aux,1
         JMP     lop_col
 
-fsh_col XOR     aux,aux,aux
+fsh_col XOR     c,c,c
+        XOR     aux,aux,aux
         RET     0
