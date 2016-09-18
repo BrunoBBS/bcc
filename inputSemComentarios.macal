@@ -14,7 +14,7 @@ esp     IS      $11
 fim_txt IS      $30
 
 
-main    XOR     c,c,c   
+main    XOR     c,c,c                               *inicializa as variaveis 
         XOR     count,count,count
         XOR     pos_w,pos_w,pos_w
         XOR     col,col,col
@@ -25,9 +25,9 @@ main    XOR     c,c,c
         OR      pos_w,pos_w,words
         OR      parag,parag,1
         SETW    rX,1
-        CALL    colunas
+        CALL    colunas                             *pega o numero de colunas passado por parametro
 
-start   INT     #80
+start   INT     #80                                 *le o primeiro caractere nao espaco e comeca uma palavra
 limbo   JN      rA,eof
         CALL    isspace
         JZ      spc,start
@@ -35,7 +35,7 @@ limbo   JN      rA,eof
         STBU    rA,c,0
         ADDU    c,c,1
 
-read    INT     #80
+read    INT     #80                                 *le o restante da palavra ate o proximo espaco
         JN      rA,finish
         CALL    isspace
         JZ      spc,finish
@@ -44,23 +44,23 @@ read    INT     #80
         ADDU    c,c,1
         JMP     read        
 
-finish  SETW    rY,0
+finish  SETW    rY,0                                *finaliza a plavra guardando um zero no fim e atualiza contadores 
         STB     rY,c,0      
         ADDU    c,c,1       
         ADDU    n,n,1
         JN      rA,eof
         JZ      spc,limbo
-espac   INT     #80
+espac   INT     #80                                 *nesse ponto o ultimo caractere lido eh uma quebra de linha entao ele procura por outra quebra de linha ou letra
         CALL    isspace
         JZ      spc,espac
         JNZ     parag,limbo
-        JMP     limbo 
+        JMP     limbo
 
-eof     PUSH    c
+eof     PUSH    c                                   *guarda o eof na memoria para quando for imprimir
         STBU    rA,c,0
         ADDU    c,c,1
 
-print   CALL    espacos
+print   CALL    espacos                             *chama a rotina de impressao
         CALL    puts
         JNZ     fim_txt,end
         JMP     print

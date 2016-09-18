@@ -14,12 +14,12 @@ n_esp   IS      $27
 tot_pal IS      $28
 
 
-puts    SETW    rX,2
+puts    SETW    rX,2                                *inicializa as variaveis
         XOR     ind_esp,ind_esp,ind_esp
         XOR     ind_pal,ind_pal,ind_pal
 
-write_w ADDU    ind_esp,ind_esp,1
-        OR      n_esp,esp,0
+write_w ADDU    ind_esp,ind_esp,1                   *carrega enderecos para a impressao de uma palavra e
+        OR      n_esp,esp,0                         * verifica se ja chegou no fim
         CMP     aux,ind_pal,tot_pal
         JNN     aux,end
         MULU    aux,ind_pal,8
@@ -36,24 +36,26 @@ fi_1    NOP
         LDOU    aux,pos_w,aux
         XOR     ind_c,ind_c,ind_c
 
-write_c LDB     rY,aux,ind_c
+write_c LDB     rY,aux,ind_c                        *loop de impressao de caracteres
         JZ      rY,end_pal
         INT     #80
         ADDU    ind_c,ind_c,1
         JMP     write_c
 
 
-end_pal ADDU    ind_pal,ind_pal,1
-        SETW    rY,95
+end_pal ADDU    ind_pal,ind_pal,1                   *finaliza a impressao de uma palvra
         CMP     aux,ind_pal,tot_pal
         JNN     aux,pula_sp
+        CMP     aux,rY,10
+        JZ      aux,pula_sp
 
-prt_spc INT     #80
+prt_spc SETW    rY,32                               *imprime os espacos entre palavras
+        INT     #80
         SUBU    n_esp,n_esp,1
         JP      n_esp,prt_spc
 pula_sp JMP     write_w
         
 
-end     SETW    rY,10
+end     SETW    rY,10                               *imprime a quebra de linha e retorna
         INT     #80
         RET     0

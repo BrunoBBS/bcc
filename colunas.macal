@@ -4,10 +4,10 @@ aux     IS      $7
 col     IS      $6
 c       IS      $0
 
-colunas SUBU    aux,rSP,24
+colunas SUBU    aux,rSP,24                          *pega da memoria o numero de colunas
         LDOU    aux,aux,0
 
-lop_col LDBU    c,aux,0
+lop_col LDBU    c,aux,0                             *converte para numero e guarda no registrador
         JZ      c,fsh_col
         SUBU    c,c,48
         MULU    col,col,10
@@ -15,6 +15,6 @@ lop_col LDBU    c,aux,0
         ADDU    aux,aux,1
         JMP     lop_col
 
-fsh_col XOR     c,c,c
+fsh_col XOR     c,c,c                               *finaliza e retorna
         XOR     aux,aux,aux
         RET     0

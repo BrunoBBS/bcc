@@ -6,7 +6,7 @@ n       IS      $2
 aux     IS      $7
 parag   IS      $21
 
-isspace XOR     spc,spc,spc
+isspace XOR     spc,spc,spc                         *verifica se o caractere do rA eh um espaco
         OR      spc,spc,1
         XOR     parag,parag,parag
         OR      parag,parag,1

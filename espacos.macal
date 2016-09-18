@@ -19,7 +19,7 @@ pl      IS      $29
 fim_txt IS      $30
 
 
-espacos XOR     esp,esp,esp
+espacos XOR     esp,esp,esp                         *inicializa as variaveis
         XOR     esp_sob,esp_sob,esp_sob
         ADDU    pos_w,words,count
         XOR     tot_pal,tot_pal,tot_pal
@@ -28,21 +28,22 @@ espacos XOR     esp,esp,esp
         XOR     dl_esp,dl_esp,dl_esp
         XOR     n,n,n
 
-lop_som LDOU    w1,words,count
-        ADDU    tot_pal,tot_pal,1
-        LDB     pl,w1,0
-        JN      pl,fim
-        CMP     aux,pl,10
+lop_som LDOU    w1,words,count                      *Pega o endereco de duas
+        ADDU    tot_pal,tot_pal,1                   * palavras consecutivas na linha e calcula o 
+        LDB     pl,w1,0                             * tamanho da primeira das duas. 
+        JN      pl,fim                               
+        CMP     aux,pl,10                           
+
         JZ      aux,if_par
         JMP     fi_par
 
-if_par  CMP     aux,tot_pal,1
+if_par  CMP     aux,tot_pal,1                       *caso haja uma separacao de paragrafos, corta a linha
         JNZ     aux,par
         ADDU    w1,w1,1
 fi_par  NOP
 
-        ADDU    count,count,8
-        ADDU    tot_pal,tot_pal,1
+        ADDU    count,count,8                       *Calcula a soma total de caracteres da linha e faz os 
+        ADDU    tot_pal,tot_pal,1                   * calculos de espaco
         LDOU    w2,words,count
         SUBU    w1_len,w2,w1
         SUBU    w1_len,w1_len,1
@@ -54,17 +55,17 @@ fi_par  NOP
         JZ      aux,certo
         JMP     lop_som
 
-maior   CMP     aux,tot_pal,2
-        JZ      aux,if_unic
+maior   SUBU    tot_len,tot_len,w1_len              *Caso a linha calculada seja maior do que o numero de         
+        SUBU    tot_len,tot_len,1                   * colunas, subtrai a ultima palavra
+        SUBU    tot_pal,tot_pal,2
+        SUBU    aux,tot_pal,2
+        JNP     aux,if_unic
         JMP     fi_unic
 
 if_unic SETW    esp_sob,0
         JMP     end
 fi_unic NOP
 
-        SUBU    tot_len,tot_len,w1_len
-        SUBU    tot_len,tot_len,1
-        SUBU    tot_pal,tot_pal,2
         SUBU    n,col,tot_len
         SR      aux2,tot_pal,1
         SUBU    aux2,aux2,1
@@ -75,7 +76,7 @@ fi_unic NOP
         SUBU    count,count,8
         JMP     end
 
-certo   SR      aux2,tot_pal,1
+certo   SR      aux2,tot_pal,1                      *Caso a linha esteja correta
         SUBU    aux2,aux2,1
         DIVU    aux,n,aux2
         ADDU    esp,aux,1
@@ -83,12 +84,14 @@ certo   SR      aux2,tot_pal,1
         SUBU    dl_esp,aux2,esp_sob
         JMP     end
 
-fim     ADDU    fim_txt,fim_txt,1
+fim     ADDU    fim_txt,fim_txt,1                   *indica o final do arquivo
 
 par     SETW    esp,1
         SETW    esp_sob,0
         ADDU    dl_esp,tot_pal,0
-end     SR      tot_pal,tot_pal,1
+
+end     ADDU    dl_esp,dl_esp,1                     *finaliza e retorna
+        SR      tot_pal,tot_pal,1
         JZ      w1,fi_para
         SUB     aux,w1,1
         LDBU    aux,aux,0
