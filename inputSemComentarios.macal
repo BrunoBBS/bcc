@@ -28,7 +28,7 @@ main    XOR     c,c,c
         CALL    colunas
 
 start   INT     #80
-limbo   JN      rA,print
+limbo   JN      rA,eof
         CALL    isspace
         JZ      spc,start
         PUSH    c
@@ -48,13 +48,17 @@ finish  SETW    rY,0
         STB     rY,c,0      
         ADDU    c,c,1       
         ADDU    n,n,1
-        JN      rA,limbo
+        JN      rA,eof
         JZ      spc,limbo
 espac   INT     #80
         CALL    isspace
         JZ      spc,espac
         JNZ     parag,limbo
-        JMP     limbo       
+        JMP     limbo 
+
+eof     PUSH    c
+        STBU    rA,c,0
+        ADDU    c,c,1
 
 print   CALL    espacos
         CALL    puts

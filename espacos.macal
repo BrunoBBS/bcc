@@ -37,7 +37,7 @@ lop_som LDOU    w1,words,count
         JMP     fi_par
 
 if_par  CMP     aux,tot_pal,1
-        JNZ     aux,end
+        JNZ     aux,par
         ADDU    w1,w1,1
 fi_par  NOP
 
@@ -84,9 +84,10 @@ certo   SR      aux2,tot_pal,1
         JMP     end
 
 fim     ADDU    fim_txt,fim_txt,1
-        INT     #DB0020
-        INT     0
 
+par     SETW    esp,1
+        SETW    esp_sob,0
+        ADDU    dl_esp,tot_pal,0
 end     SR      tot_pal,tot_pal,1
         JZ      w1,fi_para
         SUB     aux,w1,1
